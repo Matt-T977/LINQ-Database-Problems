@@ -24,7 +24,7 @@ namespace DatabaseFirstLINQ
             //ProblemSeven();
             //ProblemEight();
             //ProblemNine();
-            ProblemTen();
+            //ProblemTen();
             //ProblemEleven();
             //ProblemTwelve();
             //ProblemThirteen();
@@ -37,6 +37,7 @@ namespace DatabaseFirstLINQ
             //ProblemTwenty();
             //BonusOne();
             //BonusTwo();
+            BonusThree();
         }
 
         // <><><><><><><><> R Actions (Read) <><><><><><><><><>
@@ -166,14 +167,6 @@ namespace DatabaseFirstLINQ
             {
                 Console.WriteLine($"Employee: {cart.User.Email} Product: {cart.Product.Name} Cost: {cart.Product.Price} Quantity: {cart.Quantity}");
             }
-
-            //Solution Two (Gavin)
-            var employeeCarts = _context.UserRoles.Include(u => u.User).Include(u => u.User.ShoppingCarts).Where(sc => sc.RoleId == 2);
-            foreach (var cart in employeeCarts)
-            {
-                Console.WriteLine($"Employee Email: {cart.User.Email} Product's Name: Price: Quantity.");
-            }
-
         }
 
         // <><><><><><><><> CUD (Create, Update, Delete) Actions <><><><><><><><><>
@@ -343,10 +336,42 @@ namespace DatabaseFirstLINQ
         }
 
         // BIG ONE
+        public string userLogIn()
+        {
+            {
+                Console.WriteLine("Email Address: ");
+                var userEmail = Console.ReadLine();
+                Console.WriteLine("Password: ");
+                var userPass = Console.ReadLine();
+                var checkUserEmailExist = _context.Users.Where(eu => eu.Email == userEmail).SingleOrDefault();
+                var checkUserPassExist = _context.Users.Where(eu => eu.Password == userPass).SingleOrDefault();
+                if (checkUserEmailExist == null || checkUserPassExist == null)
+                {
+                    Console.WriteLine("Invalid Email or Password");
+                }
+                else if (userEmail == checkUserEmailExist.Email && userPass == checkUserPassExist.Password)
+                {
+                    Console.WriteLine("Signed in!");
+                }
+                return userEmail;
+            }
+        }
+        public void showAllProductsCart(string userEmail)
+        {
+            var userCart = _context.ShoppingCarts.Include(sc => sc.Product).Where(sc => sc.User.Email == userEmail);
+            foreach (var product in userCart)
+            {
+                Console.WriteLine($"Product: {product.Product.Name} Price: ${product.Product.Price}.00 Quantity: {product.Quantity}\n");
+            }
+        }
+        //public void showAllProducts()
+        //{
+        //    var allProducts:
+        //}
         private void BonusThree()
         {
-            // 1. Create functionality for a user to sign in via the console
-            // 2. If the user succesfully signs in
+            // 1. Create functionality for a user to sign in via the console - -
+            // 2. If the user succesfully signs in - -
             // a. Give them a menu where they perform the following actions within the console
             // View the products in their shopping cart
             // View all products in the Products table
@@ -355,6 +380,25 @@ namespace DatabaseFirstLINQ
             // 3. If the user does not succesfully sign in
             // a. Display "Invalid Email or Password"
             // b. Re-prompt the user for credentials
+            string userEmail = userLogIn();
+            Console.WriteLine("\n Please Select an option from one of the following:\n" +
+                "1: View all Products in your cart.\n" +
+                "2: View all products on our website.\n" +
+                "3: Add a product to your shopping cart.\n" +
+                "4: Remove a product from your shopping cart.\n");
+            string userInput = Console.ReadLine();
+            switch (userInput)
+            {
+                case "1":
+                    showAllProductsCart(userEmail);
+                    break;
+                //case "2":
+                //    showAllProducts();
+                //    break;
+            }
+
+
+
 
         }
 
