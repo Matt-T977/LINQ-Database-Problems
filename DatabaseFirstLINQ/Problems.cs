@@ -241,14 +241,14 @@
 //        {
 //            // 1. Create functionality for a user to sign in via the console
 //            // 2. If the user succesfully signs in
-//                // a. Give them a menu where they perform the following actions within the console
-//                    // View the products in their shopping cart
-//                    // View all products in the Products table
-//                    // Add a product to the shopping cart (incrementing quantity if that product is already in their shopping cart)
-//                    // Remove a product from their shopping cart
+//            // a. Give them a menu where they perform the following actions within the console
+//            // View the products in their shopping cart
+//            // View all products in the Products table
+//            // Add a product to the shopping cart (incrementing quantity if that product is already in their shopping cart)
+//            // Remove a product from their shopping cart
 //            // 3. If the user does not succesfully sing in
-//                // a. Display "Invalid Email or Password"
-//                // b. Re-prompt the user for credentials
+//            // a. Display "Invalid Email or Password"
+//            // b. Re-prompt the user for credentials
 
 //        }
 
