@@ -24,7 +24,7 @@ namespace DatabaseFirstLINQ
             //ProblemSeven();
             //ProblemEight();
             //ProblemNine();
-            ProblemTen();
+            //ProblemTen();
             //ProblemEleven();
             //ProblemTwelve();
             //ProblemThirteen();
@@ -35,7 +35,8 @@ namespace DatabaseFirstLINQ
             //ProblemEighteen();
             //ProblemNineteen();
             //ProblemTwenty();
-            BonusOne();
+            //BonusOne();
+            BonusTwo();
         }
 
         // <><><><><><><><> R Actions (Read) <><><><><><><><><>
@@ -314,7 +315,19 @@ namespace DatabaseFirstLINQ
         private void BonusTwo()
         {
             // Write a query that finds the total of every users shopping cart products using LINQ.
-            // Display the total of each users shopping cart as well as the total of the toals to the console.
+            // Display the total of each users shopping cart as well as the total of the totals to the console.
+            var customers = _context.Users.ToList();
+            var subTotal = 0.0m;
+            foreach(User customer in customers)
+            {
+                var customerTotal = _context.ShoppingCarts.Include(p => p.Product).Include(p => p.User)
+                    .Where(p => p.User.Email == customer.Email).Select(p => p.Product.Price).Sum();
+
+                Console.WriteLine($"Customer: {customer.Email} Total:{customerTotal}");
+                subTotal += customerTotal;
+            }
+            Console.WriteLine($"Total Cart Value:{subTotal}");
+
         }
 
         // BIG ONE
@@ -327,7 +340,7 @@ namespace DatabaseFirstLINQ
             // View all products in the Products table
             // Add a product to the shopping cart (incrementing quantity if that product is already in their shopping cart)
             // Remove a product from their shopping cart
-            // 3. If the user does not succesfully sing in
+            // 3. If the user does not succesfully sign in
             // a. Display "Invalid Email or Password"
             // b. Re-prompt the user for credentials
 
