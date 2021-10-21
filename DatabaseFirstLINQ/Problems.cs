@@ -166,14 +166,6 @@ namespace DatabaseFirstLINQ
             {
                 Console.WriteLine($"{cart.User.Email} {cart.Product.Name} {cart.Product.Price} {cart.Quantity}");
             }
-
-            //Solution Two (Gavin)
-            var employeeCarts = _context.UserRoles.Include(u => u.User).Include(u => u.User.ShoppingCarts).Where(sc => sc.RoleId == 2);
-            foreach (var cart in employeeCarts)
-            {
-                Console.WriteLine($"Employee Email: {cart.User.Email} Product's Name: Price: Quantity.");
-            }
-
         }
 
         // <><><><><><><><> CUD (Create, Update, Delete) Actions <><><><><><><><><>
