@@ -164,7 +164,7 @@ namespace DatabaseFirstLINQ
 
             foreach (ShoppingCart cart in employeeCarts)
             {
-                Console.WriteLine($"{cart.User.Email} {cart.Product.Name} {cart.Product.Price} {cart.Quantity}");
+                Console.WriteLine($"Employee: {cart.User.Email} Product: {cart.Product.Name} Cost: {cart.Product.Price} Quantity: {cart.Quantity}");
             }
         }
 
