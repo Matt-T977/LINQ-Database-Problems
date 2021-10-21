@@ -28,11 +28,11 @@ namespace DatabaseFirstLINQ
             //ProblemEleven();
             //ProblemTwelve();
             //ProblemThirteen();
-            ProblemFourteen();
+            //ProblemFourteen();
             //ProblemFifteen();
             //ProblemSixteen();
             //ProblemSeventeen();
-            //ProblemEighteen();
+            ProblemEighteen();
             //ProblemNineteen();
             //ProblemTwenty();
         }
@@ -118,8 +118,8 @@ namespace DatabaseFirstLINQ
         {
             // Write a LINQ query that retreives all of the users who are assigned to the role of Customer.
             // Then print the users email and role name to the console.
-            var customerUsers = _context.UserRoles.Include(ur => ur.Role).Include(ur => ur.User).Where(
-                ur => ur.Role.RoleName == "Customer");
+            var customerUsers = _context.UserRoles.Include(ur => ur.Role).Include(ur => ur.User)
+                .Where(ur => ur.Role.RoleName == "Customer");
             foreach (UserRole userRole in customerUsers)
             {
                 Console.WriteLine($"Email: {userRole.User.Email} Role: {userRole.Role.RoleName}");
@@ -130,8 +130,8 @@ namespace DatabaseFirstLINQ
         {
             // Write a LINQ query that retreives all of the products in the shopping cart of the user who has the email "afton@gmail.com".
             // Then print the product's name, price, and quantity to the console.
-            var userCart = _context.ShoppingCarts.Include(p => p.Product).Include(u => u.User).Where(
-                u => u.User.Email == "afton@gmail.com");
+            var userCart = _context.ShoppingCarts.Include(p => p.Product).Include(u => u.User)
+                .Where(u => u.User.Email == "afton@gmail.com");
             foreach (ShoppingCart cart in userCart)
             {
                 Console.WriteLine($"Product Name: {cart.Product.Name} Price: {cart.Product.Price} Quantity: {cart.Quantity}");
@@ -145,8 +145,8 @@ namespace DatabaseFirstLINQ
             // Write a LINQ query that retreives all of the products in the shopping cart of the user who has the email "oda@gmail.com" and returns the sum of all of the products prices.
             // HINT: End of query will be: .Select(sc => sc.Product.Price).Sum();
             // Then print the total of the shopping cart to the console.
-            var customerTotal = _context.ShoppingCarts.Include(p => p.Product).Include(p => p.User).Where(p => p.User.Email == "oda@gmail.com").Select(
-                p => p.Product.Price).Sum();
+            var customerTotal = _context.ShoppingCarts.Include(p => p.Product).Include(p => p.User)
+                .Where(p => p.User.Email == "oda@gmail.com").Select(p => p.Product.Price).Sum();
             Console.WriteLine(customerTotal);
             
         }
@@ -155,8 +155,9 @@ namespace DatabaseFirstLINQ
         {
             // Write a LINQ query that retreives all of the products in the shopping cart of users who have the role of "Employee".
             // Then print the user's email as well as the product's name, price, and quantity to the console.
-            
-            
+
+            var employeeUsers = _context.UserRoles.Include(ur => ur.Role).Include(ur => ur.User).Include(ur => ur.User.ShoppingCarts)
+            .Where(ur => ur.Role.RoleName == "Employee");
         }
 
         // <><><><><><><><> CUD (Create, Update, Delete) Actions <><><><><><><><><>
@@ -256,6 +257,9 @@ namespace DatabaseFirstLINQ
         private void ProblemEighteen()
         {
             // Delete the role relationship from the user who has the email "oda@gmail.com" using LINQ.
+            var userRole = _context.UserRoles.Where(ur => ur.User.Email == "oda@gmail.com").SingleOrDefault();
+            _context.UserRoles.Remove(userRole);
+            _context.SaveChanges();
 
         }
 
