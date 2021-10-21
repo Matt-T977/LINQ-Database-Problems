@@ -17,7 +17,7 @@ namespace DatabaseFirstLINQ
         {
             //ProblemOne();
             //ProblemTwo();
-            ProblemThree();
+            //ProblemThree();
             //ProblemFour();
             //ProblemFive();
             //ProblemSix();
@@ -60,6 +60,7 @@ namespace DatabaseFirstLINQ
 
         }
 
+        //Completed
         private void ProblemThree()
         {
             // Write a LINQ query that gets each product where the products price is greater than $150.
