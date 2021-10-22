@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using DatabaseFirstLINQ.Models;
 using Microsoft.EntityFrameworkCore;
-using DatabaseFirstLINQ.Models;
+using System;
+using System.Linq;
 
 namespace DatabaseFirstLINQ
 {
@@ -83,7 +83,7 @@ namespace DatabaseFirstLINQ
             // Then print the name of each product from the above query to the console.
             var products = _context.Products;
             var productsWithS = products.Where(p => p.Name.Contains("s"));
-            foreach(var product in productsWithS)
+            foreach (var product in productsWithS)
             {
                 Console.WriteLine(product.Name);
             }
@@ -107,7 +107,7 @@ namespace DatabaseFirstLINQ
             // Write a LINQ query that gets all of the users who registered AFTER 2016 and BEFORE 2018
             // Then print each user's email and registration date to the console.
             var users = _context.Users;
-            var usersPre2016 = users.Where(u => u.RegistrationDate >= new DateTime(2017, 1, 1) && u.RegistrationDate < new DateTime(2018,1,1)).ToList();
+            var usersPre2016 = users.Where(u => u.RegistrationDate >= new DateTime(2017, 1, 1) && u.RegistrationDate < new DateTime(2018, 1, 1)).ToList();
             foreach (User user in usersPre2016)
             {
                 Console.WriteLine(user.Email + " " + user.RegistrationDate);
@@ -151,7 +151,7 @@ namespace DatabaseFirstLINQ
             var customerTotal = _context.ShoppingCarts.Include(p => p.Product).Include(p => p.User)
                 .Where(p => p.User.Email == "oda@gmail.com").Select(p => p.Product.Price).Sum();
             Console.WriteLine(customerTotal);
-            
+
         }
 
         private void ProblemTen()
@@ -312,7 +312,8 @@ namespace DatabaseFirstLINQ
             {
                 Console.WriteLine("Invalid Email or Password");
             }
-            else if (userEmail == checkUserEmailExist.Email && userPass == checkUserPassExist.Password){
+            else if (userEmail == checkUserEmailExist.Email && userPass == checkUserPassExist.Password)
+            {
                 Console.WriteLine("Signed in!");
             }
         }
@@ -323,7 +324,7 @@ namespace DatabaseFirstLINQ
             // Display the total of each users shopping cart as well as the total of the totals to the console.
             var customers = _context.Users.ToList();
             var subTotal = 0.0m;
-            foreach(User customer in customers)
+            foreach (User customer in customers)
             {
                 var customerTotal = _context.ShoppingCarts.Include(p => p.Product).Include(p => p.User)
                     .Where(p => p.User.Email == customer.Email).Select(p => p.Product.Price).Sum();
@@ -338,36 +339,56 @@ namespace DatabaseFirstLINQ
         // BIG ONE
         public string userLogIn()
         {
+            Console.WriteLine("Email Address: ");
+            var userEmail = Console.ReadLine();
+            Console.WriteLine("Password: ");
+            var userPass = Console.ReadLine();
+            var checkUserEmailExist = _context.Users.Where(eu => eu.Email == userEmail).SingleOrDefault();
+            var checkUserPassExist = _context.Users.Where(eu => eu.Password == userPass).SingleOrDefault();
+            if (checkUserEmailExist == null || checkUserPassExist == null)
             {
-                Console.WriteLine("Email Address: ");
-                var userEmail = Console.ReadLine();
-                Console.WriteLine("Password: ");
-                var userPass = Console.ReadLine();
-                var checkUserEmailExist = _context.Users.Where(eu => eu.Email == userEmail).SingleOrDefault();
-                var checkUserPassExist = _context.Users.Where(eu => eu.Password == userPass).SingleOrDefault();
-                if (checkUserEmailExist == null || checkUserPassExist == null)
-                {
-                    Console.WriteLine("Invalid Email or Password");
-                }
-                else if (userEmail == checkUserEmailExist.Email && userPass == checkUserPassExist.Password)
-                {
-                    Console.WriteLine("Signed in!");
-                }
-                return userEmail;
+                Console.WriteLine("Invalid Email or Password");
             }
+            else if (userEmail == checkUserEmailExist.Email && userPass == checkUserPassExist.Password)
+            {
+                Console.WriteLine("Signed in!");
+            }
+            return userEmail;
         }
         public void showAllProductsCart(string userEmail)
         {
             var userCart = _context.ShoppingCarts.Include(sc => sc.Product).Where(sc => sc.User.Email == userEmail);
             foreach (var product in userCart)
             {
-                Console.WriteLine($"Product: {product.Product.Name} Price: ${product.Product.Price}.00 Quantity: {product.Quantity}\n");
+                Console.WriteLine($"Product: {product.Product.Id}-{product.Product.Name} | Price: ${product.Product.Price}.00 Quantity: | {product.Quantity}\n");
             }
         }
-        //public void showAllProducts()
-        //{
-        //    var allProducts:
-        //}
+        public void showAllProducts()
+        {
+            var allProducts = _context.Products.ToList();
+            foreach (Product product in allProducts)
+            {
+                Console.WriteLine($"Product: {product.Id}-{product.Name} | Price: ${product.Price}.00 | Description: {product.Description}");
+            }
+        }
+        public void addProductToCart(string userEmail)
+        {
+            Console.WriteLine("Please enter the number of the product you would like to add to your cart.");
+            string userInput = Console.ReadLine();
+            int input = Int32.Parse(userInput);
+
+            var productId = _context.Products.Where(p => p.Id == input).Select(p => p.Id).SingleOrDefault();
+            var customerId = _context.Users.Where(cn => cn.Email == userEmail).Select(ci => ci.Id).SingleOrDefault();
+            ShoppingCart newCart = new ShoppingCart()
+            {
+                UserId = customerId,
+                ProductId = productId,
+                Quantity = 1
+            };
+            _context.ShoppingCarts.Add(newCart);
+            _context.SaveChanges();
+
+        }
         private void BonusThree()
         {
             // 1. Create functionality for a user to sign in via the console - -
@@ -392,9 +413,14 @@ namespace DatabaseFirstLINQ
                 case "1":
                     showAllProductsCart(userEmail);
                     break;
-                //case "2":
-                //    showAllProducts();
-                //    break;
+                case "2":
+                    showAllProducts();
+                    break;
+                case "3":
+                    addProductToCart(userEmail);
+                    break;
+                case "4":
+                    break;
             }
 
 
