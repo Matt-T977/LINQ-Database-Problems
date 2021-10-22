@@ -339,19 +339,26 @@ namespace DatabaseFirstLINQ
         // BIG ONE
         public string userLogIn()
         {
-            Console.WriteLine("Email Address: ");
-            var userEmail = Console.ReadLine();
-            Console.WriteLine("Password: ");
-            var userPass = Console.ReadLine();
-            var checkUserEmailExist = _context.Users.Where(eu => eu.Email == userEmail).SingleOrDefault();
-            var checkUserPassExist = _context.Users.Where(eu => eu.Password == userPass).SingleOrDefault();
-            if (checkUserEmailExist == null || checkUserPassExist == null)
-            {
-                Console.WriteLine("Invalid Email or Password");
-            }
-            else if (userEmail == checkUserEmailExist.Email && userPass == checkUserPassExist.Password)
-            {
-                Console.WriteLine("Signed in!");
+            bool successLogin = false;
+            var userEmail = "";
+            while (successLogin == false) {
+                Console.WriteLine("Email Address: ");
+                userEmail = Console.ReadLine();
+                Console.WriteLine("Password: ");
+                var userPass = Console.ReadLine();
+                var checkUserEmailExist = _context.Users.Where(eu => eu.Email == userEmail).SingleOrDefault();
+                var checkUserPassExist = _context.Users.Where(eu => eu.Password == userPass).SingleOrDefault();
+                if (checkUserEmailExist == null || checkUserPassExist == null)
+                {
+                    Console.WriteLine("Invalid Email or Password");
+
+                }
+                else if (userEmail == checkUserEmailExist.Email && userPass == checkUserPassExist.Password)
+                {
+                    Console.WriteLine("Signed in!");
+                    successLogin = true;
+                    
+                }
             }
             return userEmail;
         }
@@ -389,6 +396,21 @@ namespace DatabaseFirstLINQ
             _context.SaveChanges();
 
         }
+
+        public void removeProductFromCart(string userEmail)
+        {
+            Console.WriteLine("Please enter the number of the product you would like to remove from your cart.");
+            string userInput = Console.ReadLine();
+            int input = Int32.Parse(userInput);
+
+            var productId = _context.Products.Where(p => p.Id == input).Select(p => p.Id).SingleOrDefault();
+            var customerId = _context.Users.Where(cn => cn.Email == userEmail).Select(ci => ci.Id).SingleOrDefault();
+            var deleteRow = _context.ShoppingCarts.Where(p => p.ProductId == productId).Where(p => p.UserId == customerId).SingleOrDefault();
+            
+            _context.ShoppingCarts.Remove(deleteRow);
+            _context.SaveChanges();
+
+        }
         private void BonusThree()
         {
             // 1. Create functionality for a user to sign in via the console - -
@@ -417,14 +439,17 @@ namespace DatabaseFirstLINQ
                     showAllProducts();
                     break;
                 case "3":
+                    showAllProducts();
                     addProductToCart(userEmail);
                     break;
                 case "4":
+                    showAllProductsCart(userEmail);
+                    removeProductFromCart(userEmail);
+                    break;
+                default:
+                    BonusThree();
                     break;
             }
-
-
-
 
         }
 
