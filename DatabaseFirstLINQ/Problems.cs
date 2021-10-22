@@ -362,6 +362,7 @@ namespace DatabaseFirstLINQ
             }
             return userEmail;
         }
+
         public void showAllProductsCart(string userEmail)
         {
             var userCart = _context.ShoppingCarts.Include(sc => sc.Product).Where(sc => sc.User.Email == userEmail);
@@ -370,6 +371,7 @@ namespace DatabaseFirstLINQ
                 Console.WriteLine($"Product: {product.Product.Id}-{product.Product.Name} | Price: ${product.Product.Price}.00 Quantity: | {product.Quantity}\n");
             }
         }
+
         public void showAllProducts()
         {
             var allProducts = _context.Products.ToList();
@@ -378,6 +380,7 @@ namespace DatabaseFirstLINQ
                 Console.WriteLine($"Product: {product.Id}-{product.Name} | Price: ${product.Price}.00 | Description: {product.Description}");
             }
         }
+
         public void addProductToCart(string userEmail)
         {
             Console.WriteLine("Please enter the number of the product you would like to add to your cart.");
@@ -386,14 +389,24 @@ namespace DatabaseFirstLINQ
 
             var productId = _context.Products.Where(p => p.Id == input).Select(p => p.Id).SingleOrDefault();
             var customerId = _context.Users.Where(cn => cn.Email == userEmail).Select(ci => ci.Id).SingleOrDefault();
-            ShoppingCart newCart = new ShoppingCart()
+            var customerCart = _context.ShoppingCarts.Where(p => p.ProductId == productId).Where(p => p.UserId == customerId).SingleOrDefault();
+
+            if(customerCart == null)
             {
-                UserId = customerId,
-                ProductId = productId,
-                Quantity = 1
-            };
-            _context.ShoppingCarts.Add(newCart);
-            _context.SaveChanges();
+                ShoppingCart newCart = new ShoppingCart()
+                {
+                    UserId = customerId,
+                    ProductId = productId,
+                    Quantity = 1
+                };
+                _context.ShoppingCarts.Add(newCart);
+                _context.SaveChanges();
+            }
+            else
+            {
+                customerCart.Quantity += 1;
+                _context.SaveChanges();
+            }
 
         }
 
